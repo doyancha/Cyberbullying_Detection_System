@@ -1,14 +1,8 @@
-streamlit==1.28.0
-numpy==1.26.4
-pandas==2.1.1
-scikit-learn==1.3.1
-nltk==3.8.1
-matplotlib==3.8.1
-seaborn==0.13.0
-plotly==5.17.0
-joblib==1.3.2
-imbalanced-learn==0.11.0
-scipy==1.11.3
-# Use a SciPy release with prebuilt wheels for older Python runtimes on Streamlit Cloud
-scipy==1.10.1
-openpyxl==3.1.0
+# requirements.txt
+streamlit>=1.24.0
+pandas
+numpy
+plotly
+scikit-learn
+joblib
+nltk>=3.8
