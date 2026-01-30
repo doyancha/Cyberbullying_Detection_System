@@ -15,14 +15,14 @@ A comprehensive machine learning system for detecting cyberbullying content in t
 
 ```
 ├── app.py                                    # Main Streamlit application
-├── cyberbullying_detection_system.ipynb     # ML training pipeline and EDA
-├── save_test_split.py                       # Script to generate test split files
-├── aggression_parsed_dataset.csv            # Training dataset
-├── cyberbullying_model_lr.pkl              # Trained Logistic Regression model
-├── tfidf_vectorizer.pkl                    # Fitted TF-IDF vectorizer
-├── X_test_sparse.npz                       # Test set features
-├── y_test.npy                              # Test set labels
-└── README.md                               # This file
+├── cyberbullying_detection_system.ipynb      # ML training pipeline and EDA
+├── save_test_split.py                        # Script to generate test split files
+├── aggression_parsed_dataset.csv             # Training dataset
+├── cyberbullying_model_lr.pkl                # Trained Logistic Regression model
+├── tfidf_vectorizer.pkl                      # Fitted TF-IDF vectorizer
+├── X_test_sparse.npz                         # Test set features
+├── y_test.npy                                # Test set labels
+└── README.md                                 # This file
 ```
 
 ## Installation
