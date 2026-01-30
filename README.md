@@ -139,6 +139,6 @@ Mir Shahadut Hossain
 
 ## References
 
-- Dataset: Aggression Identification in Social Media
+- Dataset: https://www.kaggle.com/datasets/saurabhshahane/cyberbullying-dataset?utm_source=chatgpt.com&select=aggression_parsed_dataset.csv
 - Scikit-learn documentation: https://scikit-learn.org/
 - Streamlit documentation: https://docs.streamlit.io/
