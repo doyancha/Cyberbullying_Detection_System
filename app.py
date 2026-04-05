@@ -220,13 +220,18 @@ h1, h2, h3 {
  
 /* ── Metric cards ── */
 .metric-card {
-    background: linear-gradient(135deg, #0f1c2e 0%, #111827 100%);
-    border: 1px solid rgba(51,65,85,0.5);
-    border-radius: 12px;
+    background:
+        radial-gradient(circle at top left, rgba(56,189,248,0.12), transparent 34%),
+        linear-gradient(145deg, rgba(15,23,42,0.96), rgba(17,24,39,0.92));
+    border: 1px solid rgba(71,85,105,0.58);
+    border-radius: 18px;
     padding: 1.25rem 1.5rem;
     position: relative;
     overflow: hidden;
-    transition: border-color 0.2s;
+    box-shadow: 0 18px 36px rgba(2,6,23,0.28), inset 0 1px 0 rgba(255,255,255,0.05);
+    backdrop-filter: blur(14px) saturate(135%);
+    -webkit-backdrop-filter: blur(14px) saturate(135%);
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
 }
 .metric-card::before {
     content: '';
@@ -235,7 +240,21 @@ h1, h2, h3 {
     height: 2px;
     background: var(--accent, linear-gradient(90deg, #3b82f6, #8b5cf6));
 }
-.metric-card:hover { border-color: rgba(99,102,241,0.4); }
+.metric-card::after {
+    content: '';
+    position: absolute;
+    inset: auto -20% -35% auto;
+    width: 160px;
+    height: 160px;
+    background: radial-gradient(circle, rgba(59,130,246,0.14), transparent 70%);
+    filter: blur(10px);
+    pointer-events: none;
+}
+.metric-card:hover {
+    border-color: rgba(96,165,250,0.55);
+    box-shadow: 0 22px 44px rgba(2,6,23,0.34), inset 0 1px 0 rgba(255,255,255,0.06), 0 0 24px rgba(59,130,246,0.16);
+    transform: translateY(-2px);
+}
 .metric-label {
     font-size: 0.7rem;
     letter-spacing: 0.1em;
@@ -280,11 +299,27 @@ h1, h2, h3 {
  
 /* ── Content panels ── */
 .panel {
-    background: #0d1117;
-    border: 1px solid rgba(51,65,85,0.45);
-    border-radius: 14px;
+    position: relative;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at top right, rgba(56,189,248,0.08), transparent 30%),
+        linear-gradient(150deg, rgba(13,17,23,0.96), rgba(15,23,42,0.9));
+    border: 1px solid rgba(71,85,105,0.42);
+    border-radius: 18px;
     padding: 1.5rem;
     margin-bottom: 1rem;
+    box-shadow: 0 16px 34px rgba(2,6,23,0.24), inset 0 1px 0 rgba(255,255,255,0.03);
+    backdrop-filter: blur(10px) saturate(125%);
+    -webkit-backdrop-filter: blur(10px) saturate(125%);
+}
+.panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(56,189,248,0.55), rgba(139,92,246,0.4), rgba(34,197,94,0.28));
 }
 .panel-title {
     font-family: 'Syne', sans-serif;
@@ -298,16 +333,26 @@ h1, h2, h3 {
  
 /* ── Prediction result boxes ── */
 .result-safe {
-    background: linear-gradient(135deg, rgba(16,185,129,0.08), rgba(5,150,105,0.04));
-    border: 1px solid rgba(16,185,129,0.3);
-    border-radius: 14px;
+    position: relative;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at top right, rgba(34,197,94,0.14), transparent 32%),
+        linear-gradient(145deg, rgba(6,78,59,0.2), rgba(15,23,42,0.94));
+    border: 1px solid rgba(52,211,153,0.34);
+    border-radius: 18px;
     padding: 1.75rem 2rem;
+    box-shadow: 0 18px 36px rgba(2,6,23,0.26), 0 0 24px rgba(16,185,129,0.08);
 }
 .result-bullying {
-    background: linear-gradient(135deg, rgba(239,68,68,0.1), rgba(185,28,28,0.05));
-    border: 1px solid rgba(239,68,68,0.35);
-    border-radius: 14px;
+    position: relative;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at top right, rgba(248,113,113,0.14), transparent 32%),
+        linear-gradient(145deg, rgba(127,29,29,0.22), rgba(15,23,42,0.94));
+    border: 1px solid rgba(248,113,113,0.34);
+    border-radius: 18px;
     padding: 1.75rem 2rem;
+    box-shadow: 0 18px 36px rgba(2,6,23,0.26), 0 0 24px rgba(239,68,68,0.08);
 }
 .result-title {
     font-family: 'Syne', sans-serif;
@@ -496,8 +541,10 @@ h1, h2, h3 {
     max-height: 520px;
     overflow-y: auto;
     overflow-x: hidden;
-    border: 1px solid rgba(51,65,85,0.35);
-    border-radius: 12px;
+    border: 1px solid rgba(71,85,105,0.4);
+    border-radius: 16px;
+    background: linear-gradient(180deg, rgba(15,23,42,0.5), rgba(8,15,30,0.38));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.03), 0 0 20px rgba(59,130,246,0.06);
 }
 .styled-table th {
     background: rgba(15,23,42,0.8);
@@ -579,8 +626,10 @@ div[data-testid="stSidebar"] div[style*='font-size:0.65rem;color:#475569;letter-
     align-items: center;
     justify-content: space-between;
     padding: 0.75rem 1rem;
-    background: rgba(15,23,42,0.5);
-    border-radius: 8px;
+    background: linear-gradient(145deg, rgba(15,23,42,0.82), rgba(17,24,39,0.72));
+    border: 1px solid rgba(71,85,105,0.34);
+    border-radius: 14px;
+    box-shadow: 0 10px 24px rgba(2,6,23,0.18), inset 0 1px 0 rgba(255,255,255,0.03);
     margin-bottom: 6px;
     font-size: 0.8rem;
 }
@@ -589,6 +638,99 @@ div[data-testid="stSidebar"] div[style*='font-size:0.65rem;color:#475569;letter-
 .file-miss { color: #f87171; font-size: 0.7rem; }
  
 /* ── Streamlit widget overrides ── */
+@property --box-angle {
+    syntax: "<angle>";
+    inherits: false;
+    initial-value: 0deg;
+}
+
+.metric-card,
+.panel,
+.result-safe,
+.result-bullying,
+.table-scroll,
+.file-row {
+    --box-angle: 0deg;
+    position: relative;
+    border: 1px solid transparent !important;
+    animation: neonBorderSpin 8s linear infinite, neonBoxPulse 3.6s ease-in-out infinite;
+}
+
+.metric-card {
+    background:
+        radial-gradient(circle at top left, rgba(56,189,248,0.14), transparent 34%),
+        linear-gradient(145deg, rgba(15,23,42,0.96), rgba(17,24,39,0.92)) padding-box,
+        conic-gradient(from var(--box-angle), rgba(56,189,248,0.88), rgba(124,58,237,0.9), rgba(34,211,238,0.86), rgba(96,165,250,0.82), rgba(56,189,248,0.88)) border-box;
+}
+
+.panel {
+    background:
+        radial-gradient(circle at top right, rgba(56,189,248,0.1), transparent 30%),
+        linear-gradient(150deg, rgba(13,17,23,0.96), rgba(15,23,42,0.9)) padding-box,
+        conic-gradient(from var(--box-angle), rgba(56,189,248,0.62), rgba(139,92,246,0.56), rgba(34,197,94,0.42), rgba(56,189,248,0.62)) border-box;
+}
+
+.result-safe {
+    background:
+        radial-gradient(circle at top right, rgba(34,197,94,0.16), transparent 32%),
+        linear-gradient(145deg, rgba(6,78,59,0.24), rgba(15,23,42,0.94)) padding-box,
+        conic-gradient(from var(--box-angle), rgba(34,197,94,0.88), rgba(45,212,191,0.84), rgba(56,189,248,0.78), rgba(34,197,94,0.88)) border-box;
+}
+
+.result-bullying {
+    background:
+        radial-gradient(circle at top right, rgba(248,113,113,0.16), transparent 32%),
+        linear-gradient(145deg, rgba(127,29,29,0.24), rgba(15,23,42,0.94)) padding-box,
+        conic-gradient(from var(--box-angle), rgba(248,113,113,0.9), rgba(236,72,153,0.84), rgba(139,92,246,0.8), rgba(248,113,113,0.9)) border-box;
+}
+
+.table-scroll {
+    background:
+        linear-gradient(180deg, rgba(15,23,42,0.54), rgba(8,15,30,0.42)) padding-box,
+        conic-gradient(from var(--box-angle), rgba(56,189,248,0.62), rgba(99,102,241,0.54), rgba(34,211,238,0.46), rgba(56,189,248,0.62)) border-box;
+}
+
+.file-row {
+    background:
+        linear-gradient(145deg, rgba(15,23,42,0.82), rgba(17,24,39,0.72)) padding-box,
+        conic-gradient(from var(--box-angle), rgba(56,189,248,0.52), rgba(139,92,246,0.42), rgba(34,197,94,0.34), rgba(56,189,248,0.52)) border-box;
+}
+
+.metric-card:hover,
+.panel:hover,
+.result-safe:hover,
+.result-bullying:hover,
+.table-scroll:hover,
+.file-row:hover {
+    box-shadow:
+        0 22px 44px rgba(2,6,23,0.38),
+        inset 0 1px 0 rgba(255,255,255,0.07),
+        0 0 28px rgba(56,189,248,0.22),
+        0 0 48px rgba(139,92,246,0.12) !important;
+    transform: translateY(-2px);
+}
+
+@keyframes neonBorderSpin {
+    from { --box-angle: 0deg; }
+    to { --box-angle: 360deg; }
+}
+
+@keyframes neonBoxPulse {
+    0%, 100% {
+        box-shadow:
+            0 16px 34px rgba(2,6,23,0.24),
+            inset 0 1px 0 rgba(255,255,255,0.04),
+            0 0 16px rgba(56,189,248,0.08);
+    }
+    50% {
+        box-shadow:
+            0 20px 40px rgba(2,6,23,0.3),
+            inset 0 1px 0 rgba(255,255,255,0.06),
+            0 0 24px rgba(56,189,248,0.16),
+            0 0 42px rgba(139,92,246,0.1);
+    }
+}
+
 .stTextArea textarea {
     background: #0d1117 !important;
     border: 1px solid rgba(51,65,85,0.6) !important;
@@ -602,30 +744,133 @@ div[data-testid="stSidebar"] div[style*='font-size:0.65rem;color:#475569;letter-
     border-color: rgba(59,130,246,0.5) !important;
     box-shadow: 0 0 0 3px rgba(59,130,246,0.1) !important;
 }
-.stButton > button {
-    background: linear-gradient(135deg, #1d4ed8, #2563eb) !important;
-    color: white !important;
-    border: none !important;
-    border-radius: 8px !important;
+.stButton > button,
+div[data-testid="stButton"] > button,
+div[data-testid="stButton"] button {
+    position: relative !important;
+    isolation: isolate !important;
+    overflow: hidden !important;
+    background: linear-gradient(135deg, rgba(8,15,30,0.72), rgba(18,26,46,0.58)) !important;
+    color: #eff6ff !important;
+    border: 1px solid rgba(125,211,252,0.18) !important;
+    border-radius: 18px !important;
     font-family: 'DM Sans', sans-serif !important;
-    font-weight: 500 !important;
-    font-size: 0.875rem !important;
-    padding: 0.5rem 1.5rem !important;
-    transition: all 0.2s !important;
-    letter-spacing: 0.02em !important;
+    font-weight: 700 !important;
+    font-size: 0.92rem !important;
+    padding: 0.78rem 1.5rem !important;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease !important;
+    letter-spacing: 0.03em !important;
     text-shadow:
-        0 0 8px rgba(255,255,255,0.22),
-        0 0 18px rgba(147,197,253,0.34),
-        0 0 34px rgba(59,130,246,0.22) !important;
+        0 0 10px rgba(255,255,255,0.2),
+        0 0 22px rgba(96,165,250,0.28),
+        0 0 42px rgba(139,92,246,0.16) !important;
+    box-shadow:
+        0 14px 32px rgba(2,6,23,0.32),
+        inset 0 1px 0 rgba(255,255,255,0.12),
+        0 0 18px rgba(59,130,246,0.18) !important;
+    backdrop-filter: blur(14px) saturate(140%) !important;
+    -webkit-backdrop-filter: blur(14px) saturate(140%) !important;
+    animation: ctaPulse 2.8s ease-in-out infinite !important;
 }
-.stButton > button:hover {
-    background: linear-gradient(135deg, #1e40af, #1d4ed8) !important;
-    transform: translateY(-1px) !important;
-    box-shadow: 0 4px 12px rgba(37,99,235,0.3) !important;
-    text-shadow:
-        0 0 10px rgba(255,255,255,0.28),
-        0 0 22px rgba(147,197,253,0.42),
-        0 0 42px rgba(59,130,246,0.28) !important;
+.stButton > button::before,
+div[data-testid="stButton"] > button::before,
+div[data-testid="stButton"] button::before {
+    content: "" !important;
+    position: absolute !important;
+    inset: -1px !important;
+    border-radius: inherit !important;
+    padding: 2px !important;
+    background: conic-gradient(from 0deg, #38bdf8, #7c3aed, #22d3ee, #60a5fa, #38bdf8) !important;
+    -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0) !important;
+    -webkit-mask-composite: xor !important;
+    mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0) !important;
+    mask-composite: exclude !important;
+    animation: ctaSpin 4s linear infinite !important;
+    z-index: -1 !important;
+}
+.stButton > button::after,
+div[data-testid="stButton"] > button::after,
+div[data-testid="stButton"] button::after {
+    content: "" !important;
+    position: absolute !important;
+    inset: 14% !important;
+    border-radius: inherit !important;
+    background: radial-gradient(circle, rgba(56,189,248,0.3), rgba(139,92,246,0.12) 45%, transparent 72%) !important;
+    filter: blur(18px) !important;
+    opacity: 0.9 !important;
+    z-index: -1 !important;
+}
+.stButton > button:hover,
+div[data-testid="stButton"] > button:hover,
+div[data-testid="stButton"] button:hover {
+    transform: translateY(-2px) scale(1.01) !important;
+    border-color: rgba(125,211,252,0.35) !important;
+    box-shadow:
+        0 18px 38px rgba(2,6,23,0.42),
+        inset 0 1px 0 rgba(255,255,255,0.16),
+        0 0 26px rgba(56,189,248,0.32),
+        0 0 50px rgba(139,92,246,0.18) !important;
+}
+.stButton > button:hover::after,
+div[data-testid="stButton"] > button:hover::after,
+div[data-testid="stButton"] button:hover::after {
+    opacity: 1 !important;
+    filter: blur(22px) !important;
+}
+
+[data-testid="stSidebar"] .stButton > button,
+[data-testid="stSidebar"] div[data-testid="stButton"] > button,
+[data-testid="stSidebar"] div[data-testid="stButton"] button {
+    background: rgba(15,23,42,0.82) !important;
+    border: 1px solid rgba(51,65,85,0.55) !important;
+    border-radius: 10px !important;
+    font-weight: 500 !important;
+    font-size: 0.85rem !important;
+    padding: 0.55rem 0.85rem !important;
+    letter-spacing: 0.02em !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    animation: none !important;
+}
+[data-testid="stSidebar"] .stButton > button::before,
+[data-testid="stSidebar"] .stButton > button::after,
+[data-testid="stSidebar"] div[data-testid="stButton"] > button::before,
+[data-testid="stSidebar"] div[data-testid="stButton"] > button::after,
+[data-testid="stSidebar"] div[data-testid="stButton"] button::before,
+[data-testid="stSidebar"] div[data-testid="stButton"] button::after {
+    content: none !important;
+}
+[data-testid="stSidebar"] .stButton > button:hover,
+[data-testid="stSidebar"] div[data-testid="stButton"] > button:hover,
+[data-testid="stSidebar"] div[data-testid="stButton"] button:hover {
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+@keyframes ctaSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+@keyframes ctaPulse {
+    0%, 100% {
+        box-shadow:
+            0 14px 32px rgba(2,6,23,0.32),
+            inset 0 1px 0 rgba(255,255,255,0.12),
+            0 0 18px rgba(59,130,246,0.18);
+    }
+    50% {
+        box-shadow:
+            0 18px 38px rgba(2,6,23,0.38),
+            inset 0 1px 0 rgba(255,255,255,0.14),
+            0 0 28px rgba(56,189,248,0.26),
+            0 0 46px rgba(139,92,246,0.14);
+    }
 }
 .stSelectbox > div > div {
     background: #0d1117 !important;
