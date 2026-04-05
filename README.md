@@ -190,10 +190,16 @@ Note: In the current repository, several of these assets are stored at the proje
 
 The Streamlit application provides a polished multi-page dashboard for live prediction, analytics, system inspection, and project presentation.
 
-### Preview
+<p align="center">
+  <img src="./assets/app-preview-1.png" width="48%" />
+  <img src="./assets/app-preview-2.png" width="48%" />
+</p>
 
-![App Screenshot](./assets/app-preview-1.png)
-![Dashboard Screenshot](./assets/app-preview-2.png)
+<p align="center">
+  <img src="./assets/app-preview-3.png" width="48%" />
+  <img src="./assets/app-preview-4.png" width="48%" />
+</p>
+
 
 Suggested screenshots to include:
 
