@@ -514,6 +514,49 @@ h1, h2, h3 {
         font-size: 0.95rem;
     }
 }
+
+.page-hero {
+    position: relative;
+    overflow: hidden;
+    padding: 1.5rem 1.6rem 1.3rem;
+    margin: 0.35rem 0 1.2rem;
+    border-radius: 22px;
+    text-align: center;
+    background:
+        radial-gradient(circle at top left, rgba(56,189,248,0.12), transparent 34%),
+        radial-gradient(circle at bottom right, rgba(139,92,246,0.1), transparent 28%),
+        linear-gradient(145deg, rgba(15,23,42,0.94), rgba(17,24,39,0.9));
+    border: 1px solid rgba(71,85,105,0.45);
+    box-shadow: 0 18px 36px rgba(2,6,23,0.24), inset 0 1px 0 rgba(255,255,255,0.04);
+}
+.page-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(56,189,248,0.9), rgba(139,92,246,0.7), rgba(34,197,94,0.55));
+}
+.page-hero-title {
+    position: relative;
+    z-index: 1;
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.45rem, 2vw, 1.95rem);
+    font-weight: 700;
+    color: #f8fafc;
+    margin: 0.2rem 0 0.45rem;
+    letter-spacing: -0.03em;
+}
+.page-hero-sub {
+    position: relative;
+    z-index: 1;
+    font-size: 0.9rem;
+    color: #94a3b8;
+    line-height: 1.65;
+    max-width: 760px;
+    margin: 0 auto;
+}
  
 /* ── Feature list ── */
 .feature-item {
@@ -1401,16 +1444,14 @@ if st.session_state.page == "Overview":
 elif st.session_state.page == "Live Detection":
  
     st.markdown("""
-    <div style='padding: 2rem 0 0.5rem;'>
+    <div class='page-hero'>
         <div class='hero-eyebrow'>Real-time Analysis</div>
-        <div style='font-family:Syne,sans-serif;font-size:1.75rem;font-weight:700;color:#f1f5f9;margin-bottom:0.5rem;'>
-            Live Detection
-        </div>
-        <div style='font-size:0.875rem;color:#475569;'>
-            Enter any text to analyse it for cyberbullying content instantly.
+        <div class='page-hero-title'>Live Detection</div>
+        <div class='page-hero-sub'>
+            Enter any text to analyse it for cyberbullying content instantly, inspect confidence,
+            and review the most influential terms behind each prediction.
         </div>
     </div>
-    <hr class='fancy-divider'>
     """, unsafe_allow_html=True)
  
     EXAMPLES = {
@@ -1654,16 +1695,14 @@ elif st.session_state.page == "Analytics":
     )
  
     st.markdown("""
-    <div style='padding: 2rem 0 0.5rem;'>
+    <div class='page-hero'>
         <div class='hero-eyebrow'>Model Evaluation</div>
-        <div style='font-family:Syne,sans-serif;font-size:1.75rem;font-weight:700;color:#f1f5f9;margin-bottom:0.5rem;'>
-            Analytics Dashboard
-        </div>
-        <div style='font-size:0.875rem;color:#475569;'>
-            Performance metrics, confusion analysis, and dataset insights.
+        <div class='page-hero-title'>Analytics Dashboard</div>
+        <div class='page-hero-sub'>
+            Review performance metrics, confusion behaviour, and dataset-level insights
+            to understand how the detection pipeline performs in practice.
         </div>
     </div>
-    <hr class='fancy-divider'>
     """, unsafe_allow_html=True)
  
     metrics = compute_metrics() or FALLBACK_METRICS
@@ -1911,16 +1950,14 @@ elif st.session_state.page == "Analytics":
 elif st.session_state.page == "System Info":
  
     st.markdown("""
-    <div style='padding: 2rem 0 0.5rem;'>
+    <div class='page-hero'>
         <div class='hero-eyebrow'>Diagnostics</div>
-        <div style='font-family:Syne,sans-serif;font-size:1.75rem;font-weight:700;color:#f1f5f9;margin-bottom:0.5rem;'>
-            System Information
-        </div>
-        <div style='font-size:0.875rem;color:#475569;'>
-            Model configuration, file status, and deployment diagnostics.
+        <div class='page-hero-title'>System Information</div>
+        <div class='page-hero-sub'>
+            Inspect model configuration, artifact availability, and deployment diagnostics
+            to verify that the application is running with the correct resources.
         </div>
     </div>
-    <hr class='fancy-divider'>
     """, unsafe_allow_html=True)
  
     col_l, col_r = st.columns(2)
@@ -2064,13 +2101,14 @@ elif st.session_state.page == "System Info":
 elif st.session_state.page == "About":
  
     st.markdown("""
-    <div style='padding: 2rem 0 0.5rem;'>
+    <div class='page-hero'>
         <div class='hero-eyebrow'>Background & Methodology</div>
-        <div style='font-family:Syne,sans-serif;font-size:1.75rem;font-weight:700;color:#f1f5f9;margin-bottom:0.5rem;'>
-            About this Project
+        <div class='page-hero-title'>About this Project</div>
+        <div class='page-hero-sub'>
+            Explore the project background, technical stack, methodology, and the practical
+            considerations behind this cyberbullying detection system.
         </div>
     </div>
-    <hr class='fancy-divider'>
     """, unsafe_allow_html=True)
  
     col_l, col_r = st.columns([1.1, 1])
