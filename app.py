@@ -2,7 +2,7 @@
 Cyberbullying Detection System — Premium Streamlit Application
 Author: Mir Shahadut Hossain
 """
-
+ 
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -12,9 +12,9 @@ import pickle
 import joblib
 import warnings
 from datetime import datetime
-
+ 
 warnings.filterwarnings("ignore")
-
+ 
 # ─────────────────────────────────────────────────────────────────────────────
 # PAGE CONFIG
 # ─────────────────────────────────────────────────────────────────────────────
@@ -24,7 +24,7 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded",
 )
-
+ 
 # ─────────────────────────────────────────────────────────────────────────────
 # GLOBAL CSS — DARK PREMIUM THEME
 # ─────────────────────────────────────────────────────────────────────────────
@@ -32,21 +32,29 @@ st.markdown("""
 <style>
 /* ── Base reset ── */
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap');
-
+ 
 html, body, [class*="css"] {
     font-family: 'DM Sans', sans-serif;
     color: #e2e8f0;
 }
-
+ 
 /* Remove Streamlit chrome */
-#MainMenu, footer, header { visibility: hidden; }
+#MainMenu, footer { visibility: hidden; }
+header {
+    visibility: visible;
+    background: transparent !important;
+}
+[data-testid="collapsedControl"] {
+    display: flex !important;
+    visibility: visible !important;
+}
 .block-container { padding: 0 2rem 2rem 2rem; max-width: 1400px; }
-
+ 
 /* ── Scrollbar ── */
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: #0f1117; }
 ::-webkit-scrollbar-thumb { background: #334155; border-radius: 2px; }
-
+ 
 /* ── App background ── */
 .stApp {
     background: #070b14;
@@ -54,11 +62,14 @@ html, body, [class*="css"] {
         radial-gradient(ellipse 80% 50% at 10% 0%, rgba(59,130,246,0.08) 0%, transparent 60%),
         radial-gradient(ellipse 60% 40% at 90% 100%, rgba(139,92,246,0.07) 0%, transparent 60%);
 }
-
+ 
 /* ── Sidebar ── */
 [data-testid="stSidebar"] {
     background: #0d1117 !important;
     border-right: 1px solid rgba(51,65,85,0.6) !important;
+}
+[data-testid="stSidebar"] > div:first-child {
+    padding-top: 1rem;
 }
 [data-testid="stSidebar"] .stRadio label {
     color: #94a3b8 !important;
@@ -68,10 +79,145 @@ html, body, [class*="css"] {
     font-size: 0.8rem;
     color: #64748b;
 }
-
+ 
 /* ── Headings ── */
-h1, h2, h3 { font-family: 'Syne', sans-serif; }
+.sidebar-brand-wrap {
+    padding: 1.1rem 0 0.55rem;
+}
+.sidebar-brand-card {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.7rem;
+    text-align: center;
+    padding: 1.2rem 1rem 1.05rem;
+    background:
+        radial-gradient(circle at top, rgba(96,165,250,0.18), transparent 55%),
+        linear-gradient(145deg, rgba(15,23,42,0.98), rgba(17,24,39,0.94));
+    border: 1px solid rgba(96,165,250,0.22);
+    border-radius: 20px;
+    box-shadow: 0 18px 40px rgba(2,6,23,0.28), inset 0 1px 0 rgba(255,255,255,0.04);
+}
+.sidebar-brand-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #38bdf8, #8b5cf6, #22c55e);
+}
+.sidebar-brand-icon {
+    width: 48px !important;
+    height: 48px !important;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem !important;
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.18), 0 12px 24px rgba(37,99,235,0.25);
+}
+.sidebar-brand-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: #f8fafc;
+}
+.sidebar-brand-subtitle {
+    font-size: 0.72rem;
+    color: #94a3b8;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
+.sidebar-credentials-wrap {
+    margin-top: 1rem;
+    padding-bottom: 0.35rem;
+}
+.sidebar-credentials-card {
+    position: relative;
+    overflow: hidden;
+    padding: 1rem 0.95rem 0.95rem;
+    background:
+        radial-gradient(circle at top right, rgba(56,189,248,0.12), transparent 45%),
+        linear-gradient(160deg, rgba(15,23,42,0.98), rgba(11,18,32,0.96));
+    border: 1px solid rgba(71,85,105,0.45);
+    border-radius: 18px;
+    box-shadow: 0 18px 36px rgba(2,6,23,0.24), inset 0 1px 0 rgba(255,255,255,0.03);
+}
+.sidebar-credentials-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #22c55e, #38bdf8, #8b5cf6);
+}
+.sidebar-credentials-label {
+    font-size: 0.62rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #64748b;
+    font-weight: 700;
+    margin-bottom: 0.45rem;
+}
+.sidebar-credentials-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    line-height: 1.15;
+    color: #f8fafc;
+    font-weight: 700;
+    margin-bottom: 0.8rem;
+}
+.sidebar-credentials-link {
+    display: block;
+    text-decoration: none;
+    color: #cbd5e1 !important;
+    background: rgba(15,23,42,0.75);
+    border: 1px solid rgba(51,65,85,0.75);
+    border-radius: 12px;
+    padding: 0.7rem 0.8rem;
+    margin-bottom: 0.55rem;
+    transition: all 0.2s ease;
+}
+.sidebar-credentials-link:last-child {
+    margin-bottom: 0;
+}
+.sidebar-credentials-link:hover {
+    border-color: rgba(56,189,248,0.45);
+    background: rgba(15,23,42,0.92);
+    transform: translateY(-1px);
+}
+.sidebar-credentials-link strong {
+    display: block;
+    font-size: 0.66rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #38bdf8;
+    margin-bottom: 0.2rem;
+}
+.sidebar-credentials-link span {
+    display: block;
+    font-size: 0.72rem;
+    line-height: 1.35;
+    color: #cbd5e1;
+    word-break: break-word;
+}
 
+h1, h2, h3 {
+    font-family: 'Syne', sans-serif;
+    text-shadow:
+        0 0 8px rgba(255,255,255,0.18),
+        0 0 18px rgba(56,189,248,0.22),
+        0 0 34px rgba(59,130,246,0.14);
+}
+ 
 /* ── Metric cards ── */
 .metric-card {
     background: linear-gradient(135deg, #0f1c2e 0%, #111827 100%);
@@ -109,7 +255,7 @@ h1, h2, h3 { font-family: 'Syne', sans-serif; }
     font-size: 0.75rem;
     color: #475569;
 }
-
+ 
 /* ── Section headers ── */
 .section-header {
     display: flex;
@@ -131,7 +277,7 @@ h1, h2, h3 { font-family: 'Syne', sans-serif; }
     color: #64748b;
     font-weight: 600;
 }
-
+ 
 /* ── Content panels ── */
 .panel {
     background: #0d1117;
@@ -149,7 +295,7 @@ h1, h2, h3 { font-family: 'Syne', sans-serif; }
     letter-spacing: 0.08em;
     margin-bottom: 1rem;
 }
-
+ 
 /* ── Prediction result boxes ── */
 .result-safe {
     background: linear-gradient(135deg, rgba(16,185,129,0.08), rgba(5,150,105,0.04));
@@ -176,7 +322,7 @@ h1, h2, h3 { font-family: 'Syne', sans-serif; }
     color: #64748b;
     margin-bottom: 0.4rem;
 }
-
+ 
 /* ── Confidence bar ── */
 .conf-track {
     background: rgba(30,41,59,0.8);
@@ -190,7 +336,7 @@ h1, h2, h3 { font-family: 'Syne', sans-serif; }
     border-radius: 99px;
     transition: width 0.5s ease;
 }
-
+ 
 /* ── Word chips ── */
 .chip-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 0.75rem; }
 .chip {
@@ -207,7 +353,7 @@ h1, h2, h3 { font-family: 'Syne', sans-serif; }
     border-color: rgba(239,68,68,0.25);
     color: #fca5a5;
 }
-
+ 
 /* ── Tag badge ── */
 .badge {
     display: inline-block;
@@ -222,79 +368,108 @@ h1, h2, h3 { font-family: 'Syne', sans-serif; }
 .badge-green { background: rgba(16,185,129,0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.2); }
 .badge-red   { background: rgba(239,68,68,0.15);  color: #f87171; border: 1px solid rgba(239,68,68,0.2); }
 .badge-amber { background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.2); }
-
+ 
 /* ── Hero section ── */
-            
-.hero-box {
-        position: relative;
-        overflow: hidden;
-        background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0f766e 100%);
-        padding: 44px 48px;
-        border-radius: 28px;
-        color: white;
-        margin-bottom: 24px;
-        box-shadow: 0 20px 60px rgba(15, 23, 42, 0.35);
-        border: 1px solid rgba(255, 255, 255, 0.10);
-    }
-
-    .hero-box::before {
-        content: "";
-        position: absolute;
-        top: -80px; right: -80px;
-        width: 340px; height: 340px;
-        border-radius: 50%;
-        background: radial-gradient(circle, rgba(99,210,191,0.18) 0%, transparent 70%);
-        pointer-events: none;
-    }
-
-    .hero-box::after {
-        content: "";
-        position: absolute;
-        bottom: -60px; left: 30%;
-        width: 260px; height: 260px;
-        border-radius: 50%;
-        background: radial-gradient(circle, rgba(59,130,246,0.12) 0%, transparent 70%);
-        pointer-events: none;
-    }
-
-
 .hero {
-    padding: 2.5rem 0 1.5rem;
     position: relative;
+    overflow: hidden;
+    padding: 2.6rem 2.4rem 2.2rem;
+    margin-bottom: 1.6rem;
+    border-radius: 30px;
+    text-align: center;
+    background:
+        radial-gradient(circle at top left, rgba(56,189,248,0.16), transparent 34%),
+        radial-gradient(circle at bottom right, rgba(34,197,94,0.12), transparent 30%),
+        linear-gradient(135deg, rgba(15,23,42,0.98), rgba(30,41,59,0.92) 48%, rgba(12,18,32,0.98));
+    border: 1px solid rgba(71,85,105,0.5);
+    box-shadow: 0 26px 60px rgba(2,6,23,0.34), inset 0 1px 0 rgba(255,255,255,0.04);
+}
+.hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(120deg, rgba(59,130,246,0.08), transparent 30%),
+        linear-gradient(300deg, rgba(139,92,246,0.08), transparent 28%);
+    pointer-events: none;
+}
+.hero::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #38bdf8, #3b82f6, #8b5cf6, #22c55e);
+    opacity: 0.95;
 }
 .hero-eyebrow {
+    position: relative;
+    z-index: 1;
     font-size: 0.7rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: #3b82f6;
-    font-weight: 600;
+    color: #7dd3fc;
+    font-weight: 700;
     margin-bottom: 0.75rem;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
 }
 .hero-eyebrow::before {
     content: '';
     display: inline-block;
-    width: 24px; height: 1px;
-    background: #3b82f6;
+    width: 28px;
+    height: 2px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #38bdf8, #8b5cf6);
 }
 .hero-title {
+    position: relative;
+    z-index: 1;
     font-family: 'Syne', sans-serif;
-    font-size: clamp(2rem, 4vw, 3rem);
+    font-size: clamp(2.4rem, 4.6vw, 3.7rem);
     font-weight: 800;
-    line-height: 1.1;
-    color: #f1f5f9;
-    margin-bottom: 0.75rem;
+    line-height: 1.02;
+    color: #f8fafc;
+    margin-bottom: 1rem;
+    letter-spacing: -0.04em;
+    text-shadow:
+        0 0 10px rgba(255,255,255,0.26),
+        0 0 24px rgba(56,189,248,0.34),
+        0 0 46px rgba(59,130,246,0.22),
+        0 0 72px rgba(59,130,246,0.12);
 }
-.hero-title span { color: #3b82f6; }
+.hero-title span {
+    color: #7dd3fc;
+    text-shadow:
+        0 0 12px rgba(255,255,255,0.22),
+        0 0 26px rgba(56,189,248,0.4),
+        0 0 54px rgba(56,189,248,0.2);
+}
 .hero-sub {
+    position: relative;
+    z-index: 1;
     font-size: 1rem;
-    color: #64748b;
-    max-width: 560px;
-    line-height: 1.6;
+    color: #cbd5e1;
+    max-width: 680px;
+    line-height: 1.75;
+    margin: 0 auto;
 }
-
+@media (max-width: 768px) {
+    .hero {
+        padding: 2rem 1.3rem 1.7rem;
+        border-radius: 24px;
+    }
+    .hero-eyebrow {
+        letter-spacing: 0.14em;
+    }
+    .hero-sub {
+        font-size: 0.95rem;
+    }
+}
+ 
 /* ── Feature list ── */
 .feature-item {
     display: flex;
@@ -314,9 +489,16 @@ h1, h2, h3 { font-family: 'Syne', sans-serif; }
 }
 .feature-text { font-size: 0.875rem; color: #94a3b8; line-height: 1.5; }
 .feature-text strong { color: #e2e8f0; font-weight: 500; }
-
+ 
 /* ── Data table ── */
 .styled-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+.table-scroll {
+    max-height: 520px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border: 1px solid rgba(51,65,85,0.35);
+    border-radius: 12px;
+}
 .styled-table th {
     background: rgba(15,23,42,0.8);
     color: #64748b;
@@ -327,6 +509,9 @@ h1, h2, h3 { font-family: 'Syne', sans-serif; }
     padding: 10px 14px;
     border-bottom: 1px solid rgba(51,65,85,0.5);
     text-align: left;
+    position: sticky;
+    top: 0;
+    z-index: 1;
 }
 .styled-table td {
     padding: 9px 14px;
@@ -335,6 +520,58 @@ h1, h2, h3 { font-family: 'Syne', sans-serif; }
 }
 .styled-table tr:last-child td { border-bottom: none; }
 .styled-table tr:hover td { background: rgba(30,41,59,0.3); color: #e2e8f0; }
+ 
+div[data-testid="stSidebar"] div[style*='display:flex;align-items:center;gap:10px;margin-bottom:1rem;'] {
+    position: relative;
+    overflow: hidden;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.65rem !important;
+    text-align: center !important;
+    padding: 1.2rem 1rem 1rem !important;
+    margin-bottom: 1rem !important;
+    background:
+        radial-gradient(circle at top, rgba(96,165,250,0.18), transparent 55%),
+        linear-gradient(145deg, rgba(15,23,42,0.98), rgba(17,24,39,0.94)) !important;
+    border: 1px solid rgba(96,165,250,0.2) !important;
+    border-radius: 20px !important;
+    box-shadow: 0 20px 45px rgba(2,6,23,0.28), inset 0 1px 0 rgba(255,255,255,0.03) !important;
+}
+div[data-testid="stSidebar"] div[style*='display:flex;align-items:center;gap:10px;margin-bottom:1rem;']::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, #38bdf8, #8b5cf6, #22c55e);
+    opacity: 0.95;
+}
+div[data-testid="stSidebar"] div[style*='display:flex;align-items:center;gap:10px;margin-bottom:1rem;'] > div:first-child {
+    width: 48px !important;
+    height: 48px !important;
+    border-radius: 16px !important;
+    font-size: 1.15rem !important;
+}
+div[data-testid="stSidebar"] div[style*='display:flex;align-items:center;gap:10px;margin-bottom:1rem;'] > div:last-child {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+}
+div[data-testid="stSidebar"] div[style*='font-family:Syne,sans-serif;font-size:0.9rem;font-weight:700;color:#f1f5f9;'] {
+    font-size: 1.1rem !important;
+    line-height: 1.05 !important;
+    letter-spacing: -0.03em !important;
+}
+div[data-testid="stSidebar"] div[style*='font-size:0.65rem;color:#475569;letter-spacing:0.05em;'] {
+    font-size: 0.72rem !important;
+    color: #94a3b8 !important;
+    letter-spacing: 0.18em !important;
+    text-transform: uppercase !important;
+}
 
 /* ── File status ── */
 .file-row {
@@ -350,7 +587,7 @@ h1, h2, h3 { font-family: 'Syne', sans-serif; }
 .file-name { color: #94a3b8; font-family: monospace; }
 .file-ok   { color: #34d399; font-size: 0.7rem; }
 .file-miss { color: #f87171; font-size: 0.7rem; }
-
+ 
 /* ── Streamlit widget overrides ── */
 .stTextArea textarea {
     background: #0d1117 !important;
@@ -376,11 +613,19 @@ h1, h2, h3 { font-family: 'Syne', sans-serif; }
     padding: 0.5rem 1.5rem !important;
     transition: all 0.2s !important;
     letter-spacing: 0.02em !important;
+    text-shadow:
+        0 0 8px rgba(255,255,255,0.22),
+        0 0 18px rgba(147,197,253,0.34),
+        0 0 34px rgba(59,130,246,0.22) !important;
 }
 .stButton > button:hover {
     background: linear-gradient(135deg, #1e40af, #1d4ed8) !important;
     transform: translateY(-1px) !important;
     box-shadow: 0 4px 12px rgba(37,99,235,0.3) !important;
+    text-shadow:
+        0 0 10px rgba(255,255,255,0.28),
+        0 0 22px rgba(147,197,253,0.42),
+        0 0 42px rgba(59,130,246,0.28) !important;
 }
 .stSelectbox > div > div {
     background: #0d1117 !important;
@@ -392,11 +637,11 @@ h1, h2, h3 { font-family: 'Syne', sans-serif; }
     background: transparent !important;
 }
 div[data-testid="stSidebarNav"] { display: none; }
-
+ 
 /* ── Plotly charts dark bg ── */
 .js-plotly-plot { background: transparent !important; }
 .plot-container { background: transparent !important; }
-
+ 
 /* ── Divider ── */
 .fancy-divider {
     border: none;
@@ -404,7 +649,7 @@ div[data-testid="stSidebarNav"] { display: none; }
     background: linear-gradient(90deg, transparent, rgba(51,65,85,0.6), transparent);
     margin: 1.5rem 0;
 }
-
+ 
 /* ── Sidebar nav ── */
 .nav-item {
     display: flex;
@@ -427,8 +672,8 @@ div[data-testid="stSidebarNav"] { display: none; }
 .nav-item:hover:not(.active) { background: rgba(30,41,59,0.5); color: #94a3b8; }
 </style>
 """, unsafe_allow_html=True)
-
-
+ 
+ 
 # ─────────────────────────────────────────────────────────────────────────────
 # SESSION STATE INIT
 # ─────────────────────────────────────────────────────────────────────────────
@@ -442,10 +687,10 @@ def init_session_state():
     for k, v in defaults.items():
         if k not in st.session_state:
             st.session_state[k] = v
-
+ 
 init_session_state()
-
-
+ 
+ 
 # ─────────────────────────────────────────────────────────────────────────────
 # ASSET LOADING — safe, cached
 # ─────────────────────────────────────────────────────────────────────────────
@@ -456,7 +701,7 @@ FILE_MAP = {
     "X_test":     "X_test_sparse.npz",
     "y_test":     "y_test.npy",
 }
-
+ 
 def safe_load_pkl(path: str):
     """Try joblib first, fall back to pickle."""
     try:
@@ -468,15 +713,15 @@ def safe_load_pkl(path: str):
             return pickle.load(f)
     except Exception:
         return None
-
+ 
 @st.cache_resource(show_spinner=False)
 def load_model():
     return safe_load_pkl(FILE_MAP["model"])
-
+ 
 @st.cache_resource(show_spinner=False)
 def load_vectorizer():
     return safe_load_pkl(FILE_MAP["vectorizer"])
-
+ 
 @st.cache_data(show_spinner=False)
 def load_dataset():
     path = FILE_MAP["dataset"]
@@ -496,7 +741,7 @@ def load_dataset():
         None
     )
     return df, text_col, label_col
-
+ 
 @st.cache_data(show_spinner=False)
 def load_test_split():
     import scipy.sparse as sp
@@ -512,13 +757,13 @@ def load_test_split():
     except Exception:
         pass
     return X, y
-
+ 
 model      = load_model()
 vectorizer = load_vectorizer()
 df, text_col, label_col = load_dataset()
 X_test, y_test = load_test_split()
-
-
+ 
+ 
 # ─────────────────────────────────────────────────────────────────────────────
 # NLP UTILITIES
 # ─────────────────────────────────────────────────────────────────────────────
@@ -534,7 +779,7 @@ try:
     NLTK_OK = True
 except Exception:
     NLTK_OK = False
-
+ 
 def clean_text(text: str) -> str:
     """Reproduce the same cleaning used during training."""
     t = str(text).lower()
@@ -546,7 +791,7 @@ def clean_text(text: str) -> str:
     if NLTK_OK:
         t = " ".join(_LEM.lemmatize(w) for w in t.split() if w not in _STOP)
     return t
-
+ 
 def get_top_features(text: str, n: int = 10):
     """Return (bullying_words, safe_words) from TF-IDF × LR coefficients."""
     if model is None or vectorizer is None:
@@ -565,13 +810,13 @@ def get_top_features(text: str, n: int = 10):
         return bully, safe
     except Exception:
         return [], []
-
+ 
 def run_prediction(text: str):
     """Return dict with prediction, confidence, proba_cb, proba_ok."""
     if not text.strip():
         return None
     cleaned = clean_text(text)
-
+ 
     if model is not None and vectorizer is not None:
         try:
             X   = vectorizer.transform([cleaned])
@@ -592,7 +837,7 @@ def run_prediction(text: str):
             }
         except Exception:
             pass
-
+ 
     # Fallback keyword heuristic
     KB = ["stupid","idiot","dumb","hate","kill","die","loser","worthless","ugly","fat","nobody","moron","freak"]
     hits = sum(1 for w in KB if w in text.lower())
@@ -609,8 +854,8 @@ def run_prediction(text: str):
         "proba_ok": 1 - c if raw == 1 else c,
         "source":   "heuristic",
     }
-
-
+ 
+ 
 # ─────────────────────────────────────────────────────────────────────────────
 # ANALYTICS HELPERS
 # ─────────────────────────────────────────────────────────────────────────────
@@ -632,28 +877,28 @@ def compute_metrics():
         }
     except Exception:
         return None
-
+ 
 FALLBACK_METRICS = {
     "accuracy": 0.810, "precision": 0.964,
     "recall": 0.802,   "f1": 0.876,
     "cm": np.array([[1300,231],[1548,6287]]),
     "n_test": 9366,    "source": "fallback",
 }
-
-
+ 
+ 
 # ─────────────────────────────────────────────────────────────────────────────
 # SIDEBAR
 # ─────────────────────────────────────────────────────────────────────────────
 with st.sidebar:
     st.markdown("""
-    <div style='padding: 1.25rem 0 0.5rem;'>
-        <div style='display:flex;align-items:center;gap:10px;margin-bottom:1rem;'>
-            <div style='width:32px;height:32px;background:linear-gradient(135deg,#1d4ed8,#7c3aed);
+    <div class='sidebar-brand-wrap'>
+        <div class='sidebar-brand-card'>
+            <div class='sidebar-brand-icon' style='width:32px;height:32px;background:linear-gradient(135deg,#1d4ed8,#7c3aed);
                         border-radius:8px;display:flex;align-items:center;justify-content:center;
                         font-size:1rem;'>🛡️</div>
             <div>
-                <div style='font-family:Syne,sans-serif;font-size:0.9rem;font-weight:700;color:#f1f5f9;'>CyberGuard</div>
-                <div style='font-size:0.65rem;color:#475569;letter-spacing:0.05em;'>Detection System v2.0</div>
+                <div class='sidebar-brand-title'>CyberGuard</div>
+                <div class='sidebar-brand-subtitle'>Detection System v2.0</div>
             </div>
         </div>
     </div>
@@ -661,10 +906,7 @@ with st.sidebar:
     <div style='font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:#334155;
                 font-weight:600;padding:0 0.25rem;margin-bottom:0.5rem;'>Navigation</div>
     """, unsafe_allow_html=True)
-
-    
-    
-
+ 
     pages = {
         "Overview":      "◈",
         "Live Detection":"◉",
@@ -680,16 +922,16 @@ with st.sidebar:
                               use_container_width=True):
             st.session_state.page = name
             st.rerun()
-
+ 
     st.markdown("<hr style='border:none;border-top:1px solid rgba(51,65,85,0.4);margin:1rem 0;'>",
                 unsafe_allow_html=True)
-
+ 
     # Status indicators
     m_ok  = model      is not None
     v_ok  = vectorizer is not None
     d_ok  = df         is not None
     ts_ok = X_test     is not None
-
+ 
     st.markdown(f"""
     <div style='font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:#334155;
                 font-weight:600;padding:0 0.25rem;margin-bottom:0.5rem;'>System Status</div>
@@ -720,9 +962,9 @@ with st.sidebar:
         </div>
     </div>
     """, unsafe_allow_html=True)
-
+ 
     st.markdown("<div style='height:1rem;'></div>", unsafe_allow_html=True)
-
+ 
     n_hist = len(st.session_state.history)
     st.markdown(f"""
     <div style='background:#0a0f1a;border-radius:8px;padding:0.75rem;
@@ -732,16 +974,37 @@ with st.sidebar:
         <div style='color:#475569;font-size:0.7rem;margin-top:2px;'>analyses this session</div>
     </div>
     """, unsafe_allow_html=True)
-
-
+ 
+ 
 # ─────────────────────────────────────────────────────────────────────────────
+    st.markdown("""
+    <div class='sidebar-credentials-wrap'>
+        <div class='sidebar-credentials-card'>
+            <div class='sidebar-credentials-label'>Created By</div>
+            <div class='sidebar-credentials-name'>Mir Shahadut Hossain</div>
+            <a class='sidebar-credentials-link' href='https://github.com/doyancha' target='_blank'>
+                <strong>GitHub</strong>
+                <span>github.com/doyancha</span>
+            </a>
+            <a class='sidebar-credentials-link' href='https://www.linkedin.com/in/mir-shahadut-hossain/' target='_blank'>
+                <strong>LinkedIn</strong>
+                <span>mir-shahadut-hossain</span>
+            </a>
+            <a class='sidebar-credentials-link' href='mailto:sujon6901@gmail.com'>
+                <strong>Email</strong>
+                <span>sujon6901@gmail.com</span>
+            </a>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
 # PAGE: OVERVIEW
 # ─────────────────────────────────────────────────────────────────────────────
 if st.session_state.page == "Overview":
-
+ 
     # Hero
     st.markdown("""
-    <div class="hero-box" style="display:flex; flex-direction:column; align-items:center; text-align:center;">
+    <div class='hero'>
         <div class='hero-eyebrow'>NLP · Machine Learning · Safety AI</div>
         <div class='hero-title'>Detect Harmful Content<br><span>Before It Causes Harm</span></div>
         <div class='hero-sub'>
@@ -750,7 +1013,7 @@ if st.session_state.page == "Overview":
         </div>
     </div>
     """, unsafe_allow_html=True)
-
+ 
     # Metrics row
     metrics = compute_metrics() or FALLBACK_METRICS
     c1, c2, c3, c4, c5 = st.columns(5)
@@ -769,11 +1032,11 @@ if st.session_state.page == "Overview":
                 <div class='metric-value' style='color:{color};'>{val}</div>
             </div>
             """, unsafe_allow_html=True)
-
+ 
     st.markdown("<div style='height:1.5rem;'></div>", unsafe_allow_html=True)
-
+ 
     col_l, col_r = st.columns([1.15, 1])
-
+ 
     with col_l:
         st.markdown("""
         <div class='section-header'>
@@ -782,7 +1045,7 @@ if st.session_state.page == "Overview":
         </div>
         <div class='panel'>
         """, unsafe_allow_html=True)
-
+ 
         features = [
             ("🔍", "Real-time Detection",
              "Classify any text as <strong>cyberbullying or safe</strong> with probability scores."),
@@ -802,9 +1065,9 @@ if st.session_state.page == "Overview":
                 <div class='feature-text'><strong>{title}</strong><br>{desc}</div>
             </div>
             """, unsafe_allow_html=True)
-
+ 
         st.markdown("</div>", unsafe_allow_html=True)
-
+ 
     with col_r:
         st.markdown("""
         <div class='section-header'>
@@ -812,7 +1075,7 @@ if st.session_state.page == "Overview":
             <div class='section-title'>Dataset snapshot</div>
         </div>
         """, unsafe_allow_html=True)
-
+ 
         if df is not None and label_col:
             try:
                 dist = df[label_col].value_counts().reset_index()
@@ -833,11 +1096,13 @@ if st.session_state.page == "Overview":
                 st.markdown(f"""
                 <div class='panel' style='padding:1rem;'>
                     <div class='panel-title'>Label distribution</div>
-                    <table class='styled-table'>
-                        <thead><tr><th>Category</th><th style='text-align:right;'>Samples</th>
-                            <th style='text-align:right;'>Share</th></tr></thead>
-                        <tbody>{rows_html}</tbody>
-                    </table>
+                    <div class='table-scroll'>
+                        <table class='styled-table'>
+                            <thead><tr><th>Category</th><th style='text-align:right;'>Samples</th>
+                                <th style='text-align:right;'>Share</th></tr></thead>
+                            <tbody>{rows_html}</tbody>
+                        </table>
+                    </div>
                 </div>
                 """, unsafe_allow_html=True)
             except Exception:
@@ -847,21 +1112,23 @@ if st.session_state.page == "Overview":
             st.markdown("""
             <div class='panel' style='padding:1rem;'>
                 <div class='panel-title'>Label distribution (reference)</div>
-                <table class='styled-table'>
-                    <thead><tr><th>Category</th><th style='text-align:right;'>Samples</th>
-                        <th style='text-align:right;'>Share</th></tr></thead>
-                    <tbody>
-                        <tr><td>Religion</td><td style='text-align:right;'>7,995</td><td style='text-align:right;'><span class='badge badge-blue'>17.1%</span></td></tr>
-                        <tr><td>Age</td><td style='text-align:right;'>7,988</td><td style='text-align:right;'><span class='badge badge-blue'>17.1%</span></td></tr>
-                        <tr><td>Ethnicity</td><td style='text-align:right;'>7,955</td><td style='text-align:right;'><span class='badge badge-blue'>17.0%</span></td></tr>
-                        <tr><td>Gender</td><td style='text-align:right;'>7,875</td><td style='text-align:right;'><span class='badge badge-blue'>16.8%</span></td></tr>
-                        <tr><td>Not CB</td><td style='text-align:right;'>7,657</td><td style='text-align:right;'><span class='badge badge-green'>16.4%</span></td></tr>
-                        <tr><td>Other CB</td><td style='text-align:right;'>7,358</td><td style='text-align:right;'><span class='badge badge-amber'>15.7%</span></td></tr>
-                    </tbody>
-                </table>
+                <div class='table-scroll'>
+                    <table class='styled-table'>
+                        <thead><tr><th>Category</th><th style='text-align:right;'>Samples</th>
+                            <th style='text-align:right;'>Share</th></tr></thead>
+                        <tbody>
+                            <tr><td>Religion</td><td style='text-align:right;'>7,995</td><td style='text-align:right;'><span class='badge badge-blue'>17.1%</span></td></tr>
+                            <tr><td>Age</td><td style='text-align:right;'>7,988</td><td style='text-align:right;'><span class='badge badge-blue'>17.1%</span></td></tr>
+                            <tr><td>Ethnicity</td><td style='text-align:right;'>7,955</td><td style='text-align:right;'><span class='badge badge-blue'>17.0%</span></td></tr>
+                            <tr><td>Gender</td><td style='text-align:right;'>7,875</td><td style='text-align:right;'><span class='badge badge-blue'>16.8%</span></td></tr>
+                            <tr><td>Not CB</td><td style='text-align:right;'>7,657</td><td style='text-align:right;'><span class='badge badge-green'>16.4%</span></td></tr>
+                            <tr><td>Other CB</td><td style='text-align:right;'>7,358</td><td style='text-align:right;'><span class='badge badge-amber'>15.7%</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
             """, unsafe_allow_html=True)
-
+ 
         # Pipeline summary
         st.markdown("""
         <div class='panel' style='padding:1rem;margin-top:0;'>
@@ -881,13 +1148,13 @@ if st.session_state.page == "Overview":
             </div>
         </div>
         """, unsafe_allow_html=True)
-
-
+ 
+ 
 # ─────────────────────────────────────────────────────────────────────────────
 # PAGE: LIVE DETECTION
 # ─────────────────────────────────────────────────────────────────────────────
 elif st.session_state.page == "Live Detection":
-
+ 
     st.markdown("""
     <div style='padding: 2rem 0 0.5rem;'>
         <div class='hero-eyebrow'>Real-time Analysis</div>
@@ -900,7 +1167,7 @@ elif st.session_state.page == "Live Detection":
     </div>
     <hr class='fancy-divider'>
     """, unsafe_allow_html=True)
-
+ 
     EXAMPLES = {
         "— Select an example —": "",
         "Severe harassment": "You're so stupid nobody likes you, you should just disappear you ugly worthless loser",
@@ -909,14 +1176,14 @@ elif st.session_state.page == "Live Detection":
         "Safe — neutral":    "I'll be at the library around 3pm if you want to study together for the exam.",
         "Ambiguous":         "You won't last long in this field, trust me.",
     }
-
+ 
     col_main, col_side = st.columns([1.4, 1])
-
+ 
     with col_main:
         example = st.selectbox("Load example text", options=list(EXAMPLES.keys()), key="example_sel")
         if example != "— Select an example —" and EXAMPLES[example]:
             st.session_state.input_text = EXAMPLES[example]
-
+ 
         user_text = st.text_area(
             "Text to analyse",
             value=st.session_state.input_text,
@@ -926,7 +1193,7 @@ elif st.session_state.page == "Live Detection":
             label_visibility="collapsed",
         )
         st.session_state.input_text = user_text
-
+ 
         word_count = len(user_text.split()) if user_text.strip() else 0
         char_count = len(user_text)
         st.markdown(f"""
@@ -934,7 +1201,7 @@ elif st.session_state.page == "Live Detection":
             {word_count} words · {char_count} chars
         </div>
         """, unsafe_allow_html=True)
-
+ 
         btn_col1, btn_col2, _ = st.columns([1, 1, 3])
         with btn_col1:
             analyse_clicked = st.button("🔍  Analyse", use_container_width=True)
@@ -943,7 +1210,7 @@ elif st.session_state.page == "Live Detection":
                 st.session_state.input_text     = ""
                 st.session_state.prediction_result = None
                 st.rerun()
-
+ 
         if analyse_clicked:
             if not user_text.strip():
                 st.warning("Please enter some text to analyse.")
@@ -955,7 +1222,7 @@ elif st.session_state.page == "Live Detection":
                         result["timestamp"] = datetime.now().strftime("%H:%M:%S")
                         st.session_state.prediction_result = result
                         st.session_state.history.append(result)
-
+ 
         # ── Result display ──
         result = st.session_state.prediction_result
         if result:
@@ -963,7 +1230,7 @@ elif st.session_state.page == "Live Detection":
             conf   = result["conf"]
             p_cb   = result["proba_cb"]
             p_ok   = result["proba_ok"]
-
+ 
             if is_cb:
                 severity = "HIGH" if p_cb >= 0.80 else "MODERATE" if p_cb >= 0.60 else "LOW"
                 sev_color= "#ef4444" if severity=="HIGH" else "#f59e0b" if severity=="MODERATE" else "#fbbf24"
@@ -1003,14 +1270,14 @@ elif st.session_state.page == "Live Detection":
                     </div>
                 </div>
                 """, unsafe_allow_html=True)
-
+ 
             # Probability breakdown
             st.markdown("<div style='height:0.75rem;'></div>", unsafe_allow_html=True)
             st.markdown("""
             <div class='panel'>
                 <div class='panel-title'>Probability Breakdown</div>
             """, unsafe_allow_html=True)
-
+ 
             for label, prob, color in [
                 ("Cyberbullying", p_cb, "#ef4444"),
                 ("Safe Content",  p_ok, "#10b981"),
@@ -1028,7 +1295,7 @@ elif st.session_state.page == "Live Detection":
                 </div>
                 """, unsafe_allow_html=True)
             st.markdown("</div>", unsafe_allow_html=True)
-
+ 
             # Top features
             bully_words, safe_words = get_top_features(result["text"])
             if bully_words or safe_words:
@@ -1053,7 +1320,7 @@ elif st.session_state.page == "Live Detection":
                     <div class='chip-row'>{chips}</div>
                     """, unsafe_allow_html=True)
                 st.markdown("</div>", unsafe_allow_html=True)
-
+ 
             # Source note
             if result.get("source") == "heuristic":
                 st.markdown("""
@@ -1061,7 +1328,7 @@ elif st.session_state.page == "Live Detection":
                     ℹ Model files not found — using keyword heuristic fallback.
                 </div>
                 """, unsafe_allow_html=True)
-
+ 
     with col_side:
         # Session history
         st.markdown("""
@@ -1070,7 +1337,7 @@ elif st.session_state.page == "Live Detection":
             <div class='section-title'>Session History</div>
         </div>
         """, unsafe_allow_html=True)
-
+ 
         history = st.session_state.history
         if not history:
             st.markdown("""
@@ -1103,7 +1370,7 @@ elif st.session_state.page == "Live Detection":
                     </div>
                 </div>
                 """, unsafe_allow_html=True)
-
+ 
         # Guidance panel
         st.markdown("""
         <div class='section-header' style='margin-top:1.5rem;'>
@@ -1125,22 +1392,22 @@ elif st.session_state.page == "Live Detection":
             </div>
         </div>
         """, unsafe_allow_html=True)
-
-
+ 
+ 
 # ─────────────────────────────────────────────────────────────────────────────
 # PAGE: ANALYTICS
 # ─────────────────────────────────────────────────────────────────────────────
 elif st.session_state.page == "Analytics":
     import plotly.graph_objects as go
     import plotly.express as px
-
+ 
     PLOTLY_LAYOUT = dict(
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
         font=dict(family="DM Sans", color="#94a3b8", size=11),
         margin=dict(l=10, r=10, t=30, b=10),
     )
-
+ 
     st.markdown("""
     <div style='padding: 2rem 0 0.5rem;'>
         <div class='hero-eyebrow'>Model Evaluation</div>
@@ -1153,10 +1420,10 @@ elif st.session_state.page == "Analytics":
     </div>
     <hr class='fancy-divider'>
     """, unsafe_allow_html=True)
-
+ 
     metrics = compute_metrics() or FALLBACK_METRICS
     is_live = "source" not in metrics
-
+ 
     if not is_live:
         st.markdown("""
         <div style='background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);
@@ -1165,7 +1432,7 @@ elif st.session_state.page == "Analytics":
             ⚠ Model or test-split files not found — displaying reference values from training notebook.
         </div>
         """, unsafe_allow_html=True)
-
+ 
     # Metrics row
     c1, c2, c3, c4 = st.columns(4)
     m_data = [
@@ -1182,12 +1449,12 @@ elif st.session_state.page == "Analytics":
                 <div class='metric-value' style='color:{color};'>{val}</div>
             </div>
             """, unsafe_allow_html=True)
-
+ 
     st.markdown("<div style='height:1rem;'></div>", unsafe_allow_html=True)
-
+ 
     # Row 1: Confusion matrix + Metric bars
     col_a, col_b = st.columns(2)
-
+ 
     with col_a:
         st.markdown("<div class='section-header'><div class='section-dot'></div><div class='section-title'>Confusion Matrix</div></div>", unsafe_allow_html=True)
         cm = metrics["cm"]
@@ -1209,7 +1476,7 @@ elif st.session_state.page == "Analytics":
             yaxis=dict(tickfont=dict(size=10)),
         )
         st.plotly_chart(fig_cm, use_container_width=True)
-
+ 
         # Derived stats
         tn, fp = int(cm[0][0]), int(cm[0][1])
         fn, tp = int(cm[1][0]), int(cm[1][1])
@@ -1237,7 +1504,7 @@ elif st.session_state.page == "Analytics":
             </div>
         </div>
         """, unsafe_allow_html=True)
-
+ 
     with col_b:
         st.markdown("<div class='section-header'><div class='section-dot' style='background:#8b5cf6;'></div><div class='section-title'>Performance vs Targets</div></div>", unsafe_allow_html=True)
         met_names  = ["Accuracy","Precision","Recall","F1-Score"]
@@ -1268,7 +1535,7 @@ elif st.session_state.page == "Analytics":
             bargap=0.3,
         )
         st.plotly_chart(fig_bar, use_container_width=True)
-
+ 
         # Top features chart
         if model is not None and vectorizer is not None:
             try:
@@ -1277,7 +1544,7 @@ elif st.session_state.page == "Analytics":
                 top_idx    = np.argsort(coefs)[-10:][::-1]
                 top_words  = [feat_names[i] for i in top_idx]
                 top_vals   = [float(coefs[i]) for i in top_idx]
-
+ 
                 fig_feat = go.Figure(go.Bar(
                     x=top_vals[::-1], y=top_words[::-1],
                     orientation="h",
@@ -1297,12 +1564,12 @@ elif st.session_state.page == "Analytics":
                 st.plotly_chart(fig_feat, use_container_width=True)
             except Exception:
                 pass
-
+ 
     # Row 2: Dataset insights
     st.markdown("<div class='section-header' style='margin-top:0.5rem;'><div class='section-dot' style='background:#10b981;'></div><div class='section-title'>Dataset Insights</div></div>", unsafe_allow_html=True)
-
+ 
     col_c, col_d = st.columns(2)
-
+ 
     with col_c:
         if df is not None and label_col:
             try:
@@ -1343,7 +1610,7 @@ elif st.session_state.page == "Analytics":
                 legend=dict(font=dict(size=9)),
             )
             st.plotly_chart(fig_pie, use_container_width=True)
-
+ 
     with col_d:
         if df is not None and text_col:
             try:
@@ -1375,7 +1642,7 @@ elif st.session_state.page == "Analytics":
                 </div>
             </div>
             """, unsafe_allow_html=True)
-
+ 
     # Sample explorer
     if df is not None and text_col and label_col:
         st.markdown("<div class='section-header'><div class='section-dot' style='background:#f59e0b;'></div><div class='section-title'>Sample Explorer</div></div>", unsafe_allow_html=True)
@@ -1391,13 +1658,13 @@ elif st.session_state.page == "Analytics":
             )
         except Exception:
             pass
-
-
+ 
+ 
 # ─────────────────────────────────────────────────────────────────────────────
 # PAGE: SYSTEM INFO
 # ─────────────────────────────────────────────────────────────────────────────
 elif st.session_state.page == "System Info":
-
+ 
     st.markdown("""
     <div style='padding: 2rem 0 0.5rem;'>
         <div class='hero-eyebrow'>Diagnostics</div>
@@ -1410,9 +1677,9 @@ elif st.session_state.page == "System Info":
     </div>
     <hr class='fancy-divider'>
     """, unsafe_allow_html=True)
-
+ 
     col_l, col_r = st.columns(2)
-
+ 
     with col_l:
         st.markdown("""
         <div class='section-header'>
@@ -1420,7 +1687,7 @@ elif st.session_state.page == "System Info":
             <div class='section-title'>Model Configuration</div>
         </div>
         """, unsafe_allow_html=True)
-
+ 
         algo   = type(model).__name__ if model else "N/A"
         v_type = type(vectorizer).__name__ if vectorizer else "N/A"
         vocab  = len(vectorizer.vocabulary_) if vectorizer and hasattr(vectorizer, "vocabulary_") else "N/A"
@@ -1428,7 +1695,7 @@ elif st.session_state.page == "System Info":
         ngrams = str(vectorizer.ngram_range) if vectorizer and hasattr(vectorizer, "ngram_range") else "N/A"
         coef   = model.coef_.shape if model and hasattr(model, "coef_") else "N/A"
         has_proba = "Yes" if model and hasattr(model, "predict_proba") else "No"
-
+ 
         rows = [
             ("Algorithm",     algo),
             ("Vectorizer",    v_type),
@@ -1439,14 +1706,14 @@ elif st.session_state.page == "System Info":
             ("predict_proba", has_proba),
             ("NLTK available",str(NLTK_OK)),
         ]
-
+ 
         rows_html = "".join(f"""
         <tr>
             <td style='color:#475569;'>{k}</td>
             <td style='font-family:monospace;color:#93c5fd;'>{v}</td>
         </tr>
         """ for k, v in rows)
-
+ 
         st.markdown(f"""
         <div class='panel'>
             <table class='styled-table'>
@@ -1455,7 +1722,7 @@ elif st.session_state.page == "System Info":
             </table>
         </div>
         """, unsafe_allow_html=True)
-
+ 
         # Training info
         st.markdown("""
         <div class='section-header'>
@@ -1485,7 +1752,7 @@ elif st.session_state.page == "System Info":
             </div>
         </div>
         """, unsafe_allow_html=True)
-
+ 
     with col_r:
         st.markdown("""
         <div class='section-header'>
@@ -1493,7 +1760,7 @@ elif st.session_state.page == "System Info":
             <div class='section-title'>File Status</div>
         </div>
         """, unsafe_allow_html=True)
-
+ 
         def fmt_size(path):
             if not os.path.exists(path):
                 return None
@@ -1501,7 +1768,7 @@ elif st.session_state.page == "System Info":
             if s > 1_048_576:  return f"{s/1_048_576:.1f} MB"
             if s > 1_024:      return f"{s/1_024:.1f} KB"
             return f"{s} B"
-
+ 
         for key, fpath in FILE_MAP.items():
             exists = os.path.exists(fpath)
             size   = fmt_size(fpath)
@@ -1514,7 +1781,7 @@ elif st.session_state.page == "System Info":
                 </span>
             </div>
             """, unsafe_allow_html=True)
-
+ 
         # Text preprocessing steps
         st.markdown("""
         <div class='section-header' style='margin-top:1.5rem;'>
@@ -1523,7 +1790,7 @@ elif st.session_state.page == "System Info":
         </div>
         <div class='panel'>
         """, unsafe_allow_html=True)
-
+ 
         steps = [
             ("1", "Lowercase",           "Convert all text to lowercase"),
             ("2", "URL removal",         "Strip http/https and www URLs"),
@@ -1542,15 +1809,15 @@ elif st.session_state.page == "System Info":
                 <div class='feature-text'><strong>{title}</strong> — {desc}</div>
             </div>
             """, unsafe_allow_html=True)
-
+ 
         st.markdown("</div>", unsafe_allow_html=True)
-
-
+ 
+ 
 # ─────────────────────────────────────────────────────────────────────────────
 # PAGE: ABOUT
 # ─────────────────────────────────────────────────────────────────────────────
 elif st.session_state.page == "About":
-
+ 
     st.markdown("""
     <div style='padding: 2rem 0 0.5rem;'>
         <div class='hero-eyebrow'>Background & Methodology</div>
@@ -1560,9 +1827,9 @@ elif st.session_state.page == "About":
     </div>
     <hr class='fancy-divider'>
     """, unsafe_allow_html=True)
-
+ 
     col_l, col_r = st.columns([1.1, 1])
-
+ 
     with col_l:
         st.markdown("""
         <div class='panel'>
@@ -1585,7 +1852,7 @@ elif st.session_state.page == "About":
                 to maximise generalisation across all 6 harm categories.
             </p>
         </div>
-
+ 
         <div class='panel' style='margin-top:0;'>
             <div class='panel-title'>Technical Stack</div>
             <div style='display:flex;flex-wrap:wrap;gap:8px;'>
@@ -1603,7 +1870,7 @@ elif st.session_state.page == "About":
                 <span class='badge badge-green'>GridSearchCV</span>
             </div>
         </div>
-
+ 
         <div class='panel' style='margin-top:0;'>
             <div class='panel-title'>References</div>
             <div style='font-size:0.8rem;color:#475569;line-height:1.7;'>
@@ -1622,7 +1889,7 @@ elif st.session_state.page == "About":
             </div>
         </div>
         """, unsafe_allow_html=True)
-
+ 
     with col_r:
         # Author card
         st.markdown("""
@@ -1645,7 +1912,7 @@ elif st.session_state.page == "About":
             </div>
         </div>
         """, unsafe_allow_html=True)
-
+ 
         # Ethical statement
         st.markdown("""
         <div class='panel' style='margin-top:0;border-color:rgba(245,158,11,0.2);'>
@@ -1675,7 +1942,7 @@ elif st.session_state.page == "About":
                 </div>
             </div>
         </div>
-
+ 
         <div class='panel' style='margin-top:0;'>
             <div class='panel-title'>Limitations</div>
             <div style='font-size:0.8rem;color:#475569;line-height:1.7;'>
@@ -1686,8 +1953,8 @@ elif st.session_state.page == "About":
             </div>
         </div>
         """, unsafe_allow_html=True)
-
-
+ 
+ 
 # ─────────────────────────────────────────────────────────────────────────────
 # FOOTER
 # ─────────────────────────────────────────────────────────────────────────────
