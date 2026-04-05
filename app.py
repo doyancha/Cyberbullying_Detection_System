@@ -1051,28 +1051,6 @@ vectorizer = load_vectorizer()
 df, text_col, label_col = load_dataset()
 X_test, y_test = load_test_split()
 
-def get_runtime_debug_info():
-    metrics = compute_metrics()
-    x_shape = tuple(X_test.shape) if X_test is not None and hasattr(X_test, "shape") else None
-    y_shape = tuple(y_test.shape) if y_test is not None and hasattr(y_test, "shape") else None
-    return {
-        "model_loaded": model is not None,
-        "vectorizer_loaded": vectorizer is not None,
-        "dataset_loaded": df is not None,
-        "x_test_loaded": X_test is not None,
-        "y_test_loaded": y_test is not None,
-        "model_file_exists": os.path.exists(FILE_MAP["model"]),
-        "vectorizer_file_exists": os.path.exists(FILE_MAP["vectorizer"]),
-        "dataset_file_exists": os.path.exists(FILE_MAP["dataset"]),
-        "x_test_file_exists": os.path.exists(FILE_MAP["X_test"]),
-        "y_test_file_exists": os.path.exists(FILE_MAP["y_test"]),
-        "x_shape": x_shape,
-        "y_shape": y_shape,
-        "metrics_source": "live" if metrics is not None else "fallback",
-        "metrics": metrics,
-    }
- 
- 
 # ─────────────────────────────────────────────────────────────────────────────
 # NLP UTILITIES
 # ─────────────────────────────────────────────────────────────────────────────
@@ -1981,51 +1959,6 @@ elif st.session_state.page == "System Info":
     </div>
     """, unsafe_allow_html=True)
 
-    debug_info = get_runtime_debug_info()
-    debug_metrics = debug_info["metrics"] or FALLBACK_METRICS
-    debug_rows = [
-        ("Metrics source", debug_info["metrics_source"]),
-        ("Model loaded", str(debug_info["model_loaded"])),
-        ("Vectorizer loaded", str(debug_info["vectorizer_loaded"])),
-        ("Dataset loaded", str(debug_info["dataset_loaded"])),
-        ("X_test loaded", str(debug_info["x_test_loaded"])),
-        ("y_test loaded", str(debug_info["y_test_loaded"])),
-        ("Model file exists", str(debug_info["model_file_exists"])),
-        ("Vectorizer file exists", str(debug_info["vectorizer_file_exists"])),
-        ("Dataset file exists", str(debug_info["dataset_file_exists"])),
-        ("X_test file exists", str(debug_info["x_test_file_exists"])),
-        ("y_test file exists", str(debug_info["y_test_file_exists"])),
-        ("X_test shape", str(debug_info["x_shape"])),
-        ("y_test shape", str(debug_info["y_shape"])),
-        ("Accuracy", f"{debug_metrics['accuracy']*100:.1f}%"),
-        ("Precision", f"{debug_metrics['precision']*100:.1f}%"),
-        ("Recall", f"{debug_metrics['recall']*100:.1f}%"),
-        ("F1 Score", f"{debug_metrics['f1']*100:.1f}%"),
-    ]
-    debug_rows_html = "".join(
-        f"""
-        <tr>
-            <td style='color:#475569;'>{label}</td>
-            <td style='font-family:monospace;color:#cbd5e1;'>{value}</td>
-        </tr>
-        """
-        for label, value in debug_rows
-    )
-
-    st.markdown(f"""
-    <div class='panel' style='margin-bottom:1.25rem;border-color:rgba(245,158,11,0.28);'>
-        <div class='panel-title' style='color:#fbbf24;'>Temporary Deployment Debug</div>
-        <div style='font-size:0.78rem;color:#94a3b8;line-height:1.6;margin-bottom:0.9rem;'>
-            Use this section to compare the live Streamlit Cloud environment with your local machine.
-            If metrics still do not match, this table will show whether the correct artifacts were loaded.
-        </div>
-        <table class='styled-table'>
-            <thead><tr><th>Check</th><th>Value</th></tr></thead>
-            <tbody>{debug_rows_html}</tbody>
-        </table>
-    </div>
-    """, unsafe_allow_html=True)
- 
     col_l, col_r = st.columns(2)
  
     with col_l:
